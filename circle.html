@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .wrapper {
+        background-color: aliceblue;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 650px;
+        height: 650px;
+        border-radius: 100%;
+      }
+
+      .layer1,
+      .layer2,
+      .layer3 {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 100%;
+      }
+
+      .layer1 {
+        height: 100px;
+        width: 100px;
+        z-index: 2;
+      }
+
+      .layer2 {
+        height: 200px;
+        width: 200px;
+        z-index: 1;
+      }
+
+      .layer3 {
+        height: 300px;
+        width: 300px;
+        z-index: 0;
+      }
+
+      .item {
+        /* background-color: blanchedalmond;
+            border: solid 2px red; */
+        height: 100%;
+        width: 50px;
+        position: absolute;
+        left: 50%;
+        transform-origin: 50% 100%;
+      }
+
+      .item--icon {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        border-radius: 100%;
+        background-color: grey;
+        opacity: 0.5;
+        transition: 0.2s ease opacity;
+      }
+
+      .active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <ul class="layer1"></ul>
+
+      <ul class="layer2"></ul>
+      <ul class="layer3"></ul>
+    </div>
+    <script>
+      let wrapper = document.querySelector(".wrapper");
+      let layer1 = document.querySelector(".layer1");
+      let layer2 = document.querySelector(".layer2");
+      let layer3 = document.querySelector(".layer3");
+
+      let angle1 = 360 / 4;
+      let angle2 = 360 / 12;
+      let angle3 = 360 / 20;
+
+      for (let i = 0; i < 4; i++) {
+        let item = createItem(layer1, angle1 * i);
+        item.addEventListener("mouseenter", (e) => {
+          item.classList.add("active");
+          layer2.innerHTML = "";
+          layer3.innerHTML = "";
+          for (let j = 0; j < 3; j++) {
+            let item2 = createItem(layer2, angle2 * j + angle1 * i);
+            item2.addEventListener("mouseenter", (e) => {
+              item2.classList.add("active");
+              layer3.innerHTML = "";
+              for (let k = 0; k < 5; k++) {
+                let item3 = createItem(
+                  layer3,
+                  angle3 * k + angle2 * j + angle1 * i
+                );
+                item3.addEventListener("mouseenter", (e) => {
+                  item3.classList.add("active");
+                });
+                item3.addEventListener("mouseleave", () =>
+                  item3.classList.remove("active")
+                );
+              }
+
+              item2.addEventListener("mouseleave", () =>
+                item2.classList.remove("active")
+              );
+            });
+          }
+          item.addEventListener("mouseleave", () =>
+            item.classList.remove("active")
+          );
+        });
+      }
+
+      wrapper.addEventListener("mouseleave", () => {
+        layer2.innerHTML = "";
+        layer3.innerHTML = "";
+      });
+
+      function createItem(parent, angle) {
+        let item = document.createElement("li");
+        item.className = "item";
+        parent.appendChild(item);
+
+        let icon = document.createElement("div");
+        icon.className = "item--icon";
+        item.append(icon);
+        item.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+
+        return icon;
+      }
+    </script>
+  </body>
+</html>
